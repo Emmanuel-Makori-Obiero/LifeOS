@@ -1,0 +1,51 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color: #111827;
+  background: #f8fafc;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  min-width: 320px;
+  min-height: 100vh;
+  margin: 0;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+@layer components {
+  .focus-ring {
+    @apply focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-offset-2;
+  }
+
+  .panel {
+    @apply rounded-lg border border-slate-200 bg-white shadow-sm;
+  }
+
+  .icon-button {
+    @apply inline-flex h-10 w-10 items-center justify-center rounded-md border border-slate-200 bg-white text-slate-700 transition hover:border-cyan-300 hover:text-cyan-700 focus-ring;
+  }
+
+  .primary-button {
+    @apply inline-flex items-center justify-center gap-2 rounded-md bg-slate-950 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-800 focus-ring disabled:cursor-not-allowed disabled:bg-slate-400;
+  }
+
+  .secondary-button {
+    @apply inline-flex items-center justify-center gap-2 rounded-md border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-800 transition hover:border-cyan-300 hover:text-cyan-700 focus-ring;
+  }
+
+  .input {
+    @apply w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-cyan-400 focus:ring-2 focus:ring-cyan-100;
+  }
+}
