@@ -1,9 +1,20 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.57.4'
 
-const corsHeaders = {
-  'Access-Control-Allow-Origin': Deno.env.get('APP_ORIGIN') ?? '*',
+const rawAppOrigin = Deno.env.get('APP_ORIGIN') ?? ''
+const appOrigin = rawAppOrigin.replace(/\/+$/, '')
+
+const baseCorsHeaders = {
+  'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
   'Access-Control-Allow-Methods': 'GET, POST, OPTIONS'
+}
+
+function getCorsHeaders(request?: Request) {
+  const reqOrigin = request?.headers.get('Origin')
+  return {
+    ...baseCorsHeaders,
+    'Access-Control-Allow-Origin': reqOrigin || appOrigin || '*'
+  }
 }
 
 const supabaseUrl = Deno.env.get('SUPABASE_URL') ?? ''
@@ -11,7 +22,6 @@ const serviceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
 const googleClientId = Deno.env.get('GOOGLE_CLIENT_ID') ?? ''
 const googleClientSecret = Deno.env.get('GOOGLE_CLIENT_SECRET') ?? ''
 const googleRedirectUri = Deno.env.get('GOOGLE_REDIRECT_URI') ?? ''
-const appOrigin = Deno.env.get('APP_ORIGIN') ?? ''
 
 const serviceClient = createClient(supabaseUrl, serviceRoleKey)
 
@@ -19,7 +29,7 @@ type SourceType = 'task' | 'lesson' | 'calendar_event' | 'reminder'
 
 Deno.serve(async (request) => {
   if (request.method === 'OPTIONS') {
-    return new Response('ok', { headers: corsHeaders })
+    return new Response('ok', { headers: getCorsHeaders(request) })
   }
 
   try {
@@ -243,7 +253,7 @@ function addMinutes(value: string, minutes: number) {
 function json(body: unknown, status = 200) {
   return new Response(JSON.stringify(body), {
     status,
-    headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+    headers: { ...baseCorsHeaders, 'Content-Type': 'application/json' }
   })
 }
 
